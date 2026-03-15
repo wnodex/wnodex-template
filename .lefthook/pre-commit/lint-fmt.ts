@@ -1,6 +1,7 @@
 /**
  * @file lint-fmt.ts
  * @description Git pre-commit hook script (Lefthook Script mode).
+ * Orchestrates both linting and formatting sequentially.
  */
 
 import { spawn } from 'node:child_process';
@@ -14,25 +15,53 @@ const pkgManager = process.env.npm_config_user_agent?.includes('npm')
       ? 'yarn'
       : 'pnpm';
 
-const runCommand = pkgManager === 'npm' ? 'npm' : pkgManager;
-const runArgs = pkgManager === 'npm' ? ['run', 'lint:fmt'] : ['lint:fmt'];
+const runner =
+  pkgManager === 'npm'
+    ? 'npx'
+    : pkgManager === 'pnpm'
+      ? 'pnpm'
+      : pkgManager === 'bun'
+        ? 'bun'
+        : 'yarn';
+const runnerArgs =
+  pkgManager === 'pnpm'
+    ? ['exec', 'tsx']
+    : pkgManager === 'bun'
+      ? ['x', 'tsx']
+      : pkgManager === 'yarn'
+        ? ['run', 'tsx']
+        : ['tsx'];
 
-console.log(`🥊 Running pre-commit: ${pkgManager} lint:fmt`);
+/**
+ * Runs a command as a promise.
+ */
+function runCommand(command: string, args: string[]): Promise<void> {
+  return new Promise((resolve, reject) => {
+    console.log(`🚀 Running: ${command} ${args.join(' ')}`);
+    const child = spawn(command, args, { stdio: 'inherit', shell: false });
+    child.on('close', (code) => {
+      if (code === 0) resolve();
+      else reject(new Error(`Command failed with code ${code}`));
+    });
+    child.on('error', reject);
+  });
+}
 
-const child = spawn(runCommand, runArgs, {
-  stdio: 'inherit',
-  shell: false,
-});
+/**
+ * Main execution sequence.
+ */
+try {
+  console.log(
+    `🧐 Starting pre-commit linting and formatting sequence with ${pkgManager}...`
+  );
 
-child.on('close', (code) => {
-  if (code !== 0) {
-    /* eslint-disable-next-line unicorn/no-process-exit */
-    process.exit(code || 1);
-  }
-});
+  await runCommand(runner, [...runnerArgs, './scripts/lint.ts']);
+  await runCommand(runner, [...runnerArgs, './scripts/fmt.ts']);
 
-child.on('error', (err) => {
-  console.error('💥 Pre-commit hook failed:', err);
+  console.log('✅ Pre-commit sequence completed successfully!');
+} catch (error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(`💥 Pre-commit sequence failed: ${message}`);
   /* eslint-disable-next-line unicorn/no-process-exit */
   process.exit(1);
-});
+}
