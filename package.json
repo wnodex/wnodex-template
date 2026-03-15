@@ -6,14 +6,12 @@
   "type": "module",
   "main": "dist/main.js",
   "scripts": {
-    "build": "wnodex-build",
+    "build": "turbo run build",
     "dev": "tsx watch src/main.ts",
     "fmt": "tsx ./scripts/fmt.ts",
-    "generate-package-json": "tsx ./scripts/generate-package-json.ts",
     "lint": "tsx ./scripts/lint.ts",
     "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "sync": "tsx ./scripts/sync.ts"
+    "prisma:migrate": "prisma migrate dev"
   },
   "commitlint": {
     "extends": [
