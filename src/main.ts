@@ -7,7 +7,7 @@ import { wnodex } from './configs/wnodex.js';
 import { CLIENT_ASSETS_PATH, CLIENT_BUILD_PATH } from './consts/paths.js';
 import { PROD } from './consts/prod.js';
 import { apiRouter } from './routes/api-router.js';
-import { rootRouter } from './routes/root-router.ts';
+import { rootRouter } from './routes/root-router.js';
 
 const app = wnodex.getApp();
 const logger = app.get('logger') as Logger;

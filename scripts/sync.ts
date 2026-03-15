@@ -12,6 +12,8 @@ import { parseArgs } from 'node:util';
 
 import syncdir from 'sync-directory';
 
+import { getPackageManager } from './utils/pkg-manager.js';
+
 /**
  * Configuration for the sync process.
  */
@@ -41,7 +43,6 @@ function runCommand(
     console.log(`🚀 Running: ${command} ${args.join(' ')}`);
 
     // Avoid security warning by not passing args array when shell is true.
-    // We'll try running without a shell first for better security and reliability.
     const child = spawn(command, args, {
       stdio: 'inherit',
       shell: false,
@@ -82,11 +83,15 @@ function getPackageConfig(): Partial<SyncConfig> {
  * Core sync logic.
  */
 export async function sync(config: SyncConfig): Promise<void> {
+  const pkgManager = getPackageManager();
+  const defaultBuildCommand =
+    pkgManager === 'npm' ? 'npm run build' : `${pkgManager} build`;
+
   const {
     clientDir: clientDirRaw,
     clientDistDir: distName,
     destination: destRaw,
-    buildCommand = 'pnpm run build',
+    buildCommand = defaultBuildCommand,
   } = config;
 
   const clientDir = path.resolve(process.cwd(), clientDirRaw);
@@ -107,7 +112,7 @@ export async function sync(config: SyncConfig): Promise<void> {
   if (!existsSync(distDir)) {
     console.log(`🔨 Build directory not found at ${distDir}. Building...`);
     const [cmd, ...args] = buildCommand.split(' ');
-    await runCommand(cmd, args, { cwd: clientDir });
+    await runCommand(cmd!, args, { cwd: clientDir });
 
     // Double check if build actually created the directory
     if (!existsSync(distDir)) {
@@ -154,7 +159,7 @@ Options:
   --client-dir <path>       Path to the client project directory
   --client-dist-dir <path>  Name of the distribution directory (e.g., "dist" or "build")
   --destination <path>      Path where assets should be synced
-  --build-command <cmd>     Command to run if dist dir is missing (default: "pnpm run build")
+  --build-command <cmd>     Command to run if dist dir is missing (default: detects from environment)
   -h, --help                Show this help message
     `);
     return;
