@@ -1,0 +1,81 @@
+{
+  "name": "server",
+  "version": "0.0.1",
+  "description": "Server application",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "pnpm run sync && node esbuild.config.mjs && node postbuild.mjs",
+    "dev": "tsx watch src/main.ts",
+    "fmt": "pnpm dlx prettier --ignore-unknown --write .",
+    "generate-package-json": "tsx ./scripts/generate-package-json.ts",
+    "lint": "pnpm dlx eslint --no-warn-ignored --fix .",
+    "lint:fmt": "pnpm run lint && pnpm run fmt",
+    "sync": "tsx ./scripts/sync.ts"
+  },
+  "commitlint": {
+    "extends": [
+      "spellbookx"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-git"
+    }
+  },
+  "prettier": "prettier-config-spellbookx/base",
+  "dependencies": {
+    "@wnodex/react-router": "^0.3.0",
+    "express": "^5.2.1",
+    "pino": "^10.3.1",
+    "wnodex": "^0.3.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.4.4",
+    "@cspell/cspell-types": "^9.7.0",
+    "@dcdavidev/tsconfig": "^0.1.0",
+    "@prettier/plugin-xml": "^3.4.2",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "commitizen": "^4.3.1",
+    "commitlint-config-spellbookx": "^0.11.1",
+    "cspell": "^9.7.0",
+    "cspell-config-spellbookx": "^0.11.1",
+    "cz-git": "^1.12.0",
+    "esbuild": "^0.27.4",
+    "eslint": "^10.0.3",
+    "eslint-plugin-spellbookx": "^0.11.1",
+    "lefthook": "^2.1.4",
+    "prettier": "^3.8.1",
+    "prettier-config-spellbookx": "^0.11.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-ini": "^1.3.0",
+    "prettier-plugin-packagejson": "^3.0.2",
+    "prettier-plugin-prisma": "^5.0.0",
+    "prettier-plugin-properties": "^0.3.1",
+    "prettier-plugin-sh": "^0.18.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "prettier-plugin-toml": "^2.0.6",
+    "sync-directory": "^6.0.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "generateConfig": {
+    "name": "application",
+    "packagePaths": [
+      ".",
+      "../www"
+    ],
+    "internalPrefixes": [
+      "@repo"
+    ],
+    "main": "./main.js",
+    "distDir": "dist"
+  },
+  "syncConfig": {
+    "clientDir": "../www",
+    "clientDistDir": "build",
+    "destination": "www"
+  }
+}

@@ -1,0 +1,15 @@
+---
+$schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json
+version: '0.2'
+language: it, en
+import:
+  - 'cspell-config-spellbookx'
+dictionaryDefinitions:
+  - name: custom-misc
+    path: './dictionaries/misc.txt'
+    addWords: true
+dictionaries:
+  - custom-misc
+  - custom-ita
+ignorePaths:
+  - 'node_modules'
