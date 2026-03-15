@@ -1,4 +1,9 @@
 import { defineConfig } from 'eslint/config';
 import spellbookx from 'eslint-plugin-spellbookx';
 
-export default defineConfig([spellbookx.configs.recommended]);
+export default defineConfig([
+  {
+    ignores: ['src/models/prisma/**'],
+  },
+  ...spellbookx.configs.recommended,
+]);

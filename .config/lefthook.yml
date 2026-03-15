@@ -3,10 +3,10 @@
 
 pre-commit:
   scripts:
-    "lint-fmt.ts":
+    'lint-fmt.ts':
       runner: npx tsx
 
 commit-msg:
   scripts:
-    "commit-lint.ts":
+    'commit-lint.ts':
       runner: npx tsx
